@@ -1,0 +1,52 @@
+{
+  "name": "@gasbuddy/opentelemetry-instrumentation-fetch-node",
+  "version": "1.0.0",
+  "description": "OpenTelemetry Node 18+ native fetch automatic instrumentation package",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "yarn dlx rimraf ./build",
+    "prepare": "husky install",
+    "lint": "eslint src"
+  },
+  "engines": {
+    "node": ">18.0.0"
+  },
+  "author": "GasBuddy Developers <developers@gasbuddy.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gas-buddy/opentelemetry-instrumentation-fetch-node.git"
+  },
+  "keywords": [
+    "typescript",
+    "gasbuddy"
+  ],
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": "yarn eslint --cache --fix"
+  },
+  "devDependencies": {
+    "@opentelemetry/sdk-trace-base": "^1.7.0",
+    "@opentelemetry/sdk-trace-node": "^1.7.0",
+    "@types/jest": "^29.1.1",
+    "eslint": "^8.2.0",
+    "eslint-config-gasbuddy": "^7.0.2",
+    "husky": "^8.0.1",
+    "jest": "^29.1.2",
+    "jest-openapi": "^0.14.2",
+    "lint-staged": "^13.0.3",
+    "ts-jest": "^29.0.3",
+    "typescript": "^4.8.4"
+  },
+  "dependencies": {
+    "@gasbuddy/gb-services": "^23.0.0",
+    "@gasbuddy/service": "^12.0.0",
+    "@opentelemetry/api": "^1.2.0",
+    "@opentelemetry/api-metrics": "^0.33.0",
+    "@opentelemetry/instrumentation": "^0.33.0",
+    "@opentelemetry/semantic-conventions": "^1.7.0"
+  },
+  "packageManager": "yarn@3.2.4"
+}
