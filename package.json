@@ -1,5 +1,5 @@
 {
-  "name": "@gasbuddy/opentelemetry-instrumentation-fetch-node",
+  "name": "opentelemetry-instrumentation-fetch-node",
   "version": "1.0.0",
   "description": "OpenTelemetry Node 18+ native fetch automatic instrumentation package",
   "main": "build/index.js",
@@ -22,7 +22,10 @@
   },
   "keywords": [
     "typescript",
-    "gasbuddy"
+    "gasbuddy",
+    "opentelemetry",
+    "fetch",
+    "undici"
   ],
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "yarn eslint --cache --fix"
