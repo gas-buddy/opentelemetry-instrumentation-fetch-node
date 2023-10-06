@@ -12,6 +12,9 @@ import { Instrumentation, InstrumentationConfig } from '@opentelemetry/instrumen
 import {
   Attributes,
   context,
+  Meter,
+  MeterProvider,
+  metrics,
   propagation,
   Span,
   SpanKind,
@@ -20,7 +23,6 @@ import {
   Tracer,
   TracerProvider,
 } from '@opentelemetry/api';
-import { Meter, MeterProvider, metrics } from '@opentelemetry/api-metrics';
 
 interface ListenerRecord {
   name: string;
