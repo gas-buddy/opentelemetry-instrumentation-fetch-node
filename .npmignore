@@ -5,6 +5,13 @@
 .yarnrc.yml
 .yarn
 
+src/**/*.spec.ts
+src/**/*.test.ts
+/__tests__
+/__mocks__
+__snapshots__
+__image_snapshots__
+
 # Stock
 *.seed
 *.log

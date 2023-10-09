@@ -5,8 +5,8 @@
  * compliance with the BSD 2-Clause License.
  *
  */
-
 import diagch from 'node:diagnostics_channel';
+
 import { SemanticAttributes } from '@opentelemetry/semantic-conventions';
 import { Instrumentation, InstrumentationConfig } from '@opentelemetry/instrumentation';
 import {
@@ -30,8 +30,24 @@ interface ListenerRecord {
   onMessage: diagch.ChannelListener;
 }
 
+interface FetchRequest {
+  method: string;
+  origin: string;
+  path: string;
+  headers: string;
+}
+
+interface FetchResponse {
+  headers: Buffer[];
+  statusCode: number;
+}
+
 export interface FetchInstrumentationConfig extends InstrumentationConfig {
-  onRequest?: (args: { request: any; span: Span; additionalHeaders: Record<string, any> }) => void;
+  onRequest?: (args: {
+    request: FetchRequest;
+    span: Span;
+    additionalHeaders: Record<string, string | string[]>;
+  }) => void;
 }
 
 // Get the content-length from undici response headers.
@@ -59,7 +75,7 @@ export class FetchInstrumentation implements Instrumentation {
   // unsubscribing.
   private channelSubs: Array<ListenerRecord> | undefined;
 
-  private spanFromReq = new WeakMap<any, Span>();
+  private spanFromReq = new WeakMap<FetchRequest, Span>();
 
   private tracer: Tracer;
 
@@ -71,7 +87,8 @@ export class FetchInstrumentation implements Instrumentation {
 
   public readonly instrumentationVersion = '1.0.0';
 
-  public readonly instrumentationDescription = 'Instrumentation for Node 18 fetch via diagnostics_channel';
+  public readonly instrumentationDescription =
+    'Instrumentation for Node 18 fetch via diagnostics_channel';
 
   private subscribeToChannel(diagnosticChannel: string, onMessage: diagch.ChannelListener) {
     const channel = diagch.channel(diagnosticChannel);
@@ -97,10 +114,18 @@ export class FetchInstrumentation implements Instrumentation {
   }
 
   enable(): void {
-    this.subscribeToChannel('undici:request:create', (args) => this.onRequest(args));
-    this.subscribeToChannel('undici:request:headers', (args) => this.onHeaders(args));
-    this.subscribeToChannel('undici:request:trailers', (args) => this.onDone(args));
-    this.subscribeToChannel('undici:request:error', (args) => this.onError(args));
+    this.subscribeToChannel('undici:request:create', (args) =>
+      this.onRequest(args as { request: FetchRequest }),
+    );
+    this.subscribeToChannel('undici:request:headers', (args) =>
+      this.onHeaders(args as { request: FetchRequest; response: FetchResponse }),
+    );
+    this.subscribeToChannel('undici:request:trailers', (args) =>
+      this.onDone(args as { request: FetchRequest }),
+    );
+    this.subscribeToChannel('undici:request:error', (args) =>
+      this.onError(args as { request: FetchRequest; error: Error }),
+    );
   }
 
   setTracerProvider(tracerProvider: TracerProvider): void {
@@ -119,7 +144,7 @@ export class FetchInstrumentation implements Instrumentation {
     return this.config;
   }
 
-  onRequest({ request }: any): void {
+  onRequest({ request }: { request: FetchRequest }): void {
     // Don't instrument CONNECT - see comments at:
     // https://github.com/elastic/apm-agent-nodejs/blob/c55b1d8c32b2574362fc24d81b8e173ce2f75257/lib/instrumentation/modules/undici.js#L24
     if (request.method === 'CONNECT') {
@@ -148,7 +173,7 @@ export class FetchInstrumentation implements Instrumentation {
     this.spanFromReq.set(request, span);
   }
 
-  onHeaders({ request, response }: any): void {
+  onHeaders({ request, response }: { request: FetchRequest; response: FetchResponse }): void {
     const span = this.spanFromReq.get(request);
 
     if (span !== undefined) {
@@ -171,7 +196,7 @@ export class FetchInstrumentation implements Instrumentation {
     }
   }
 
-  onDone({ request }: any): void {
+  onDone({ request }: { request: FetchRequest }): void {
     const span = this.spanFromReq.get(request);
     if (span !== undefined) {
       span.end();
@@ -179,7 +204,7 @@ export class FetchInstrumentation implements Instrumentation {
     }
   }
 
-  onError({ request, error }: any): void {
+  onError({ request, error }: { request: FetchRequest; error: Error }): void {
     const span = this.spanFromReq.get(request);
     if (span !== undefined) {
       span.recordException(error);

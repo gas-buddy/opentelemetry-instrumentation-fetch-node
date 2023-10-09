@@ -54,3 +54,11 @@ Thumbs.db
 
 # TypeScript incremental compilation cache
 *.tsbuildinfo
+# Added by coconfig
+.eslintignore
+.npmignore
+tsconfig.json
+tsconfig.build.json
+.prettierrc.js
+.eslintrc.js
+.commitlintrc.json

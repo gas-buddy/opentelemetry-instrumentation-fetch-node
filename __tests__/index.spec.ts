@@ -1,4 +1,5 @@
 import http from 'http';
+import { expect, test, vi } from 'vitest';
 import { ReadableSpan, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
@@ -9,23 +10,23 @@ test('Basic function', async () => {
   const provider = new NodeTracerProvider({});
   const exportedSpans: ReadableSpan[] = [];
 
-  provider.addSpanProcessor(new SimpleSpanProcessor({
-    export(spans, resultCallback) {
-      exportedSpans.push(...spans);
-      resultCallback({ code: 0 });
-    },
-    shutdown: jest.fn(),
-  }));
+  provider.addSpanProcessor(
+    new SimpleSpanProcessor({
+      export(spans, resultCallback) {
+        exportedSpans.push(...spans);
+        resultCallback({ code: 0 });
+      },
+      shutdown: vi.fn(),
+    }),
+  );
   provider.register();
 
   const config = {
-    onRequest: jest.fn(),
+    onRequest: vi.fn(),
   };
 
   registerInstrumentations({
-    instrumentations: [
-      new FetchInstrumentation(config),
-    ],
+    instrumentations: [new FetchInstrumentation(config)],
     tracerProvider: provider,
   });
 
@@ -38,16 +39,26 @@ test('Basic function', async () => {
       res.writeHead(200);
     }
     res.end('OK');
+    res.destroy();
   });
   await new Promise<void>((accept) => {
     server.listen(12345, accept);
   });
+
   await fetch('http://localhost:12345');
   expect(config.onRequest).toHaveBeenCalledTimes(1);
   await fetch('http://localhost:12345', { headers: { 'x-error': '1' } });
   expect(config.onRequest).toHaveBeenCalledTimes(2);
 
-  await new Promise<void>((accept) => { server.close(() => accept()); });
+  await new Promise<void>((accept, reject) => {
+    server.close((error) => {
+      if (error) {
+        reject(error);
+      } else {
+        accept();
+      }
+    });
+  });
 
   try {
     await fetch('http://localhost:12345');

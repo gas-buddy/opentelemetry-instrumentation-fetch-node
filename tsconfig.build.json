@@ -5,5 +5,7 @@
     "src/**/*.test.ts",
     "__tests__/**/*.ts",
     "__mocks__/**/*.ts",
+    "coconfig.ts",
+    "vitest.config.ts"
   ]
 }
