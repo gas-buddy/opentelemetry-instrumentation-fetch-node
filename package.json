@@ -31,8 +31,8 @@
     "*.{js,jsx,ts,tsx}": "yarn eslint --cache --fix"
   },
   "devDependencies": {
-    "@opentelemetry/sdk-trace-base": "^1.7.0",
-    "@opentelemetry/sdk-trace-node": "^1.7.0",
+    "@opentelemetry/sdk-trace-base": "^1.17.0",
+    "@opentelemetry/sdk-trace-node": "^1.17.0",
     "@types/jest": "^29.2.0",
     "eslint": "^8.25.0",
     "eslint-config-gasbuddy": "^7.0.3",
@@ -44,10 +44,9 @@
     "typescript": "^4.8.4"
   },
   "dependencies": {
-    "@opentelemetry/api": "^1.2.0",
-    "@opentelemetry/api-metrics": "^0.33.0",
-    "@opentelemetry/instrumentation": "^0.33.0",
-    "@opentelemetry/semantic-conventions": "^1.7.0"
+    "@opentelemetry/api": "^1.6.0",
+    "@opentelemetry/instrumentation": "^0.43.0",
+    "@opentelemetry/semantic-conventions": "^1.17.0"
   },
   "packageManager": "yarn@3.2.4"
 }
