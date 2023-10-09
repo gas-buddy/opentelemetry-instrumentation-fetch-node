@@ -1,6 +1,6 @@
 {
   "name": "opentelemetry-instrumentation-fetch-node",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "OpenTelemetry Node 18+ native fetch automatic instrumentation package",
   "main": "build/index.js",
   "types": "build/index.d.ts",
