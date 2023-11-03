@@ -5,6 +5,7 @@ import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { FetchInstrumentation } from '../src';
 import { SpanStatusCode } from '@opentelemetry/api';
+import { SemanticAttributes } from '@opentelemetry/semantic-conventions';
 
 test('Basic function', async () => {
   const provider = new NodeTracerProvider({});
@@ -45,7 +46,7 @@ test('Basic function', async () => {
     server.listen(12345, accept);
   });
 
-  await fetch('http://localhost:12345');
+  await fetch('http://localhost:12345/my-path');
   expect(config.onRequest).toHaveBeenCalledTimes(1);
   await fetch('http://localhost:12345', { headers: { 'x-error': '1' } });
   expect(config.onRequest).toHaveBeenCalledTimes(2);
@@ -69,8 +70,10 @@ test('Basic function', async () => {
 
   expect(exportedSpans.length).toBe(3);
   expect(exportedSpans[0].status.code).toEqual(SpanStatusCode.OK);
+  expect(exportedSpans[0].attributes[SemanticAttributes.HTTP_URL]).toEqual('http://localhost:12345/my-path');
   expect(exportedSpans[1].status.code).toEqual(SpanStatusCode.ERROR);
   expect(exportedSpans[1].status.message).toMatch(/500/);
+  expect(exportedSpans[1].attributes[SemanticAttributes.HTTP_URL]).toEqual('http://localhost:12345/');
   expect(exportedSpans[2].status.code).toEqual(SpanStatusCode.ERROR);
   expect(exportedSpans[2].status.message).toMatch(/ECONNREFUSED/);
 });

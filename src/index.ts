@@ -153,7 +153,7 @@ export class FetchInstrumentation implements Instrumentation {
     const span = this.tracer.startSpan(`HTTP ${request.method}`, {
       kind: SpanKind.CLIENT,
       attributes: {
-        [SemanticAttributes.HTTP_URL]: String(request.origin),
+        [SemanticAttributes.HTTP_URL]: getAbsoluteUrl(request.origin, request.path),
         [SemanticAttributes.HTTP_METHOD]: request.method,
         [SemanticAttributes.HTTP_TARGET]: request.path,
         'http.client': 'fetch',
@@ -215,4 +215,18 @@ export class FetchInstrumentation implements Instrumentation {
       span.end();
     }
   }
+}
+
+function getAbsoluteUrl(origin: string, path: string = '/'): string {
+  const url =`${origin}`;
+
+  if(origin.endsWith('/') && path.startsWith('/')) {
+    return `${url}${path.slice(1)}`;
+  }
+
+  if(!origin.endsWith('/') && !path.startsWith('/')) {
+    return `${url}/${path.slice(1)}`;
+  }
+
+  return `${url}${path}`;
 }
