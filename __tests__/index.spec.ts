@@ -1,10 +1,12 @@
 import http from 'http';
+
 import { expect, test, vi } from 'vitest';
 import { ReadableSpan, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
-import { FetchInstrumentation } from '../src';
 import { SpanStatusCode } from '@opentelemetry/api';
+
+import { FetchInstrumentation } from '../src';
 
 test('Basic function', async () => {
   const provider = new NodeTracerProvider({});

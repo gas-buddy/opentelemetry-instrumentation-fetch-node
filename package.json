@@ -1,6 +1,6 @@
 {
   "name": "opentelemetry-instrumentation-fetch-node",
-  "version": "1.1.0",
+  "version": "0.0.0",
   "description": "OpenTelemetry Node 18+ native fetch automatic instrumentation package",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -8,7 +8,6 @@
     "test": "vitest",
     "build": "tsc -p tsconfig.build.json",
     "clean": "yarn dlx rimraf ./build",
-    "prepare": "husky install",
     "lint": "eslint src"
   },
   "engines": {
@@ -27,24 +26,42 @@
     "fetch",
     "undici"
   ],
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": "yarn eslint --cache --fix"
-  },
   "config": {
     "coconfig": "@openapi-typescript-infra/coconfig"
   },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/exec",
+        {
+          "publishCmd": "yarn dlx pinst --disable"
+        }
+      ],
+      "@semantic-release/npm",
+      "@semantic-release/github"
+    ]
+  },
   "devDependencies": {
+    "@commitlint/config-conventional": "^18.1.0",
     "@openapi-typescript-infra/coconfig": "^4.2.2",
     "@opentelemetry/sdk-trace-base": "^1.17.0",
     "@opentelemetry/sdk-trace-node": "^1.17.0",
+    "@semantic-release/commit-analyzer": "^11.1.0",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/github": "^9.2.2",
+    "@semantic-release/release-notes-generator": "^12.1.0",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
     "coconfig": "^1.0.0",
     "eslint": "^8.53.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.29.0",
-    "husky": "^8.0.3",
-    "lint-staged": "^14.0.1",
+    "semantic-release": "^22.0.7",
     "typescript": "^5.2.2",
     "vitest": "^0.34.6"
   },
