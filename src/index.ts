@@ -43,11 +43,19 @@ interface FetchResponse {
 }
 
 export interface FetchInstrumentationConfig extends InstrumentationConfig {
+  ignoreRequestHook?: (request: FetchRequest) => boolean;
   onRequest?: (args: {
     request: FetchRequest;
     span: Span;
     additionalHeaders: Record<string, string | string[]>;
   }) => void;
+}
+
+function getMessage(error: Error) {
+  if (error instanceof AggregateError) {
+    return error.errors.map((e) => e.message).join(', ');
+  }
+  return error.message;
 }
 
 // Get the content-length from undici response headers.
@@ -150,6 +158,10 @@ export class FetchInstrumentation implements Instrumentation {
     if (request.method === 'CONNECT') {
       return;
     }
+    if (this.config.ignoreRequestHook && this.config.ignoreRequestHook(request) === true) {
+      return;
+    }
+
     const span = this.tracer.startSpan(`HTTP ${request.method}`, {
       kind: SpanKind.CLIENT,
       attributes: {
@@ -210,7 +222,7 @@ export class FetchInstrumentation implements Instrumentation {
       span.recordException(error);
       span.setStatus({
         code: SpanStatusCode.ERROR,
-        message: error.message,
+        message: getMessage(error),
       });
       span.end();
     }

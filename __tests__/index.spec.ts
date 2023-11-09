@@ -1,11 +1,13 @@
 import http from 'http';
+
 import { expect, test, vi } from 'vitest';
 import { ReadableSpan, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
-import { FetchInstrumentation } from '../src';
 import { SpanStatusCode } from '@opentelemetry/api';
 import { SemanticAttributes } from '@opentelemetry/semantic-conventions';
+
+import { FetchInstrumentation } from '../src';
 
 test('Basic function', async () => {
   const provider = new NodeTracerProvider({});
@@ -46,9 +48,9 @@ test('Basic function', async () => {
     server.listen(12345, accept);
   });
 
-  await fetch('http://localhost:12345/my-path');
+  await fetch('http://localhost:12345/my-path', { keepalive: false });
   expect(config.onRequest).toHaveBeenCalledTimes(1);
-  await fetch('http://localhost:12345', { headers: { 'x-error': '1' } });
+  await fetch('http://localhost:12345', { headers: { 'x-error': '1' }, keepalive: false });
   expect(config.onRequest).toHaveBeenCalledTimes(2);
 
   await new Promise<void>((accept, reject) => {
