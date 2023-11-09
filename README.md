@@ -1,5 +1,4 @@
-opentelemetry-instrumentation-fetch-node
-===============
+# opentelemetry-instrumentation-fetch-node
 
 [![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.png?v=101)](https://github.com/ellerbrock/typescript-badges/)
 
@@ -9,9 +8,9 @@ opentelemetry-instrumentation-fetch-node
 
 OpenTelemetry Node 18+ native fetch automatic instrumentation package.
 
-Existing instrumentation packages (like [@opentelemetry/instrumentation-http](https://www.npmjs.com/package/@opentelemetry/instrumentation-http)) do not work with Node 18 native fetch, which is based on the [undici module](https://undici.nodejs.org/#/) but packaged in a "strange" way (some sort of internal bundle that I don't really understand). This module uses the new Node diagnostics channel to instrument native fetch.
+Existing instrumentation packages (like [@opentelemetry/instrumentation-http](https://www.npmjs.com/package/@opentelemetry/instrumentation-http)) do not work with Node 18+ native fetch, which is based on the [undici module](https://undici.nodejs.org/#/) but packaged in a "strange" way (some sort of internal bundle that I don't really understand). This module uses the new Node diagnostics channel to instrument native fetch.
 
-Note that due to the fact that fetch is lazy loaded in Node 18, this module will kick off a "phony" fetch
+Note that due to the fact that fetch is lazy loaded in Node, this module will kick off a "phony" fetch
 to an unparseable URL (blank string) to get the library to load so we don't miss any events (because the
 diagnostics channel would not yet exist).
 
