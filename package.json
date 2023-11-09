@@ -8,6 +8,7 @@
     "test": "vitest",
     "build": "tsc -p tsconfig.build.json",
     "clean": "yarn dlx rimraf ./build",
+    "postinstall": "yarn coconfig",
     "lint": "eslint src"
   },
   "engines": {
