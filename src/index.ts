@@ -43,6 +43,7 @@ interface FetchResponse {
 }
 
 export interface FetchInstrumentationConfig extends InstrumentationConfig {
+  ignoreRequestHook?: (request: FetchRequest) => boolean;
   onRequest?: (args: {
     request: FetchRequest;
     span: Span;
@@ -150,6 +151,10 @@ export class FetchInstrumentation implements Instrumentation {
     if (request.method === 'CONNECT') {
       return;
     }
+    if (this.config.ignoreRequestHook && this.config.ignoreRequestHook(request) === true) {
+      return;
+    }
+
     const span = this.tracer.startSpan(`HTTP ${request.method}`, {
       kind: SpanKind.CLIENT,
       attributes: {
