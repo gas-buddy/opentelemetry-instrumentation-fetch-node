@@ -47,9 +47,9 @@ test('Basic function', async () => {
     server.listen(12345, accept);
   });
 
-  await fetch('http://localhost:12345');
+  await fetch('http://localhost:12345', { keepalive: false });
   expect(config.onRequest).toHaveBeenCalledTimes(1);
-  await fetch('http://localhost:12345', { headers: { 'x-error': '1' } });
+  await fetch('http://localhost:12345', { headers: { 'x-error': '1' }, keepalive: false });
   expect(config.onRequest).toHaveBeenCalledTimes(2);
 
   await new Promise<void>((accept, reject) => {

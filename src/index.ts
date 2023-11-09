@@ -51,6 +51,13 @@ export interface FetchInstrumentationConfig extends InstrumentationConfig {
   }) => void;
 }
 
+function getMessage(error: Error) {
+  if (error instanceof AggregateError) {
+    return error.errors.map((e) => e.message).join(', ');
+  }
+  return error.message;
+}
+
 // Get the content-length from undici response headers.
 // `headers` is an Array of buffers: [k, v, k, v, ...].
 // If the header is not present, or has an invalid value, this returns null.
@@ -215,7 +222,7 @@ export class FetchInstrumentation implements Instrumentation {
       span.recordException(error);
       span.setStatus({
         code: SpanStatusCode.ERROR,
-        message: error.message,
+        message: getMessage(error),
       });
       span.end();
     }
