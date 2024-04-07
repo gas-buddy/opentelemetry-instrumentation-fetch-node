@@ -34,7 +34,7 @@ interface FetchRequest {
   method: string;
   origin: string;
   path: string;
-  headers: string;
+  headers: string | string[];
 }
 
 interface FetchResponse {
@@ -179,9 +179,13 @@ export class FetchInstrumentation implements Instrumentation {
       this.config.onRequest({ request, span, additionalHeaders: addedHeaders });
     }
 
-    request.headers += Object.entries(addedHeaders)
-      .map(([k, v]) => `${k}: ${v}\r\n`)
-      .join('');
+    if (Array.isArray(request.headers)) {
+      request.headers.push(...Object.entries(addedHeaders).flat());
+    } else {
+      request.headers += Object.entries(addedHeaders)
+        .map(([k, v]) => `${k}: ${v}\r\n`)
+        .join('');
+    }
     this.spanFromReq.set(request, span);
   }
 
