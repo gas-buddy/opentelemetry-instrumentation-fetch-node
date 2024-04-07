@@ -50,6 +50,7 @@
   "devDependencies": {
     "@commitlint/config-conventional": "^18.1.0",
     "@openapi-typescript-infra/coconfig": "^4.2.2",
+    "@opentelemetry/api": "^1.6.0",
     "@opentelemetry/sdk-trace-base": "^1.17.0",
     "@opentelemetry/sdk-trace-node": "^1.17.0",
     "@semantic-release/commit-analyzer": "^11.1.0",
@@ -66,9 +67,11 @@
     "typescript": "^5.2.2",
     "vitest": "^0.34.6"
   },
+  "peerDependencies": {
+    "@opentelemetry/api": "^1.6.0"
+  },
   "dependencies": {
-    "@opentelemetry/api": "^1.6.0",
-    "@opentelemetry/instrumentation": "^0.43.0",
+    "@opentelemetry/instrumentation": "^0.46.0",
     "@opentelemetry/semantic-conventions": "^1.17.0"
   },
   "packageManager": "yarn@3.2.4"
