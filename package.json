@@ -48,28 +48,28 @@
     ]
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "^18.1.0",
-    "@openapi-typescript-infra/coconfig": "^4.2.2",
-    "@opentelemetry/sdk-trace-base": "^1.17.0",
-    "@opentelemetry/sdk-trace-node": "^1.17.0",
-    "@semantic-release/commit-analyzer": "^11.1.0",
+    "@commitlint/config-conventional": "^19.1.0",
+    "@openapi-typescript-infra/coconfig": "^4.3.0",
+    "@opentelemetry/sdk-trace-base": "^1.23.0",
+    "@opentelemetry/sdk-trace-node": "^1.23.0",
+    "@semantic-release/commit-analyzer": "^12.0.0",
     "@semantic-release/exec": "^6.0.3",
-    "@semantic-release/github": "^9.2.2",
-    "@semantic-release/release-notes-generator": "^12.1.0",
+    "@semantic-release/github": "^10.0.3",
+    "@semantic-release/release-notes-generator": "^13.0.0",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
-    "coconfig": "^1.0.0",
-    "eslint": "^8.53.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-import": "^2.29.0",
-    "semantic-release": "^22.0.7",
-    "typescript": "^5.2.2",
-    "vitest": "^0.34.6"
+    "coconfig": "^1.5.2",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "semantic-release": "^23.0.7",
+    "typescript": "^5.4.4",
+    "vitest": "^1.4.0"
   },
   "dependencies": {
-    "@opentelemetry/api": "^1.6.0",
-    "@opentelemetry/instrumentation": "^0.43.0",
-    "@opentelemetry/semantic-conventions": "^1.17.0"
+    "@opentelemetry/api": "^1.8.0",
+    "@opentelemetry/instrumentation": "^0.50.0",
+    "@opentelemetry/semantic-conventions": "^1.23.0"
   },
   "packageManager": "yarn@3.2.4"
 }

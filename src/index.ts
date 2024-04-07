@@ -7,7 +7,13 @@
  */
 import diagch from 'node:diagnostics_channel';
 
-import { SemanticAttributes } from '@opentelemetry/semantic-conventions';
+import {
+  SEMATTRS_HTTP_METHOD,
+  SEMATTRS_HTTP_URL,
+  SEMATTRS_HTTP_TARGET,
+  SEMATTRS_HTTP_RESPONSE_CONTENT_LENGTH,
+  SEMATTRS_HTTP_STATUS_CODE,
+} from '@opentelemetry/semantic-conventions';
 import { Instrumentation, InstrumentationConfig } from '@opentelemetry/instrumentation';
 import {
   Attributes,
@@ -34,7 +40,7 @@ interface FetchRequest {
   method: string;
   origin: string;
   path: string;
-  headers: string;
+  headers: string | string[];
 }
 
 interface FetchResponse {
@@ -165,9 +171,9 @@ export class FetchInstrumentation implements Instrumentation {
     const span = this.tracer.startSpan(`HTTP ${request.method}`, {
       kind: SpanKind.CLIENT,
       attributes: {
-        [SemanticAttributes.HTTP_URL]: getAbsoluteUrl(request.origin, request.path),
-        [SemanticAttributes.HTTP_METHOD]: request.method,
-        [SemanticAttributes.HTTP_TARGET]: request.path,
+        [SEMATTRS_HTTP_URL]: getAbsoluteUrl(request.origin, request.path),
+        [SEMATTRS_HTTP_METHOD]: request.method,
+        [SEMATTRS_HTTP_TARGET]: request.path,
         'http.client': 'fetch',
       },
     });
@@ -179,9 +185,15 @@ export class FetchInstrumentation implements Instrumentation {
       this.config.onRequest({ request, span, additionalHeaders: addedHeaders });
     }
 
-    request.headers += Object.entries(addedHeaders)
-      .map(([k, v]) => `${k}: ${v}\r\n`)
-      .join('');
+    if (Array.isArray(request.headers)) {
+      Object.entries(addedHeaders).forEach(([k, v]) => {
+        (request.headers as string[]).push(k, v);
+      });
+    } else {
+      request.headers += Object.entries(addedHeaders)
+        .map(([k, v]) => `${k}: ${v}\r\n`)
+        .join('');
+    }
     this.spanFromReq.set(request, span);
   }
 
@@ -195,10 +207,10 @@ export class FetchInstrumentation implements Instrumentation {
 
       const cLen = contentLengthFromResponseHeaders(response.headers);
       const attrs: Attributes = {
-        [SemanticAttributes.HTTP_STATUS_CODE]: response.statusCode,
+        [SEMATTRS_HTTP_STATUS_CODE]: response.statusCode,
       };
       if (cLen) {
-        attrs[SemanticAttributes.HTTP_RESPONSE_CONTENT_LENGTH] = cLen;
+        attrs[SEMATTRS_HTTP_RESPONSE_CONTENT_LENGTH] = cLen;
       }
       span.setAttributes(attrs);
       span.setStatus({
