@@ -76,6 +76,14 @@ function contentLengthFromResponseHeaders(headers: Buffer[]) {
   return undefined;
 }
 
+async function loadFetch() {
+  try {
+    await fetch('');
+  } catch (_) {
+    //
+  }
+}
+
 // A combination of https://github.com/elastic/apm-agent-nodejs and
 // https://github.com/gadget-inc/opentelemetry-instrumentations/blob/main/packages/opentelemetry-instrumentation-undici/src/index.ts
 export class FetchInstrumentation implements Instrumentation {
@@ -110,7 +118,7 @@ export class FetchInstrumentation implements Instrumentation {
 
   constructor(config: FetchInstrumentationConfig) {
     // Force load fetch API (since it's lazy loaded in Node 18)
-    fetch('').catch(() => {});
+    loadFetch();
     this.channelSubs = [];
     this.meter = metrics.getMeter(this.instrumentationName, this.instrumentationVersion);
     this.tracer = trace.getTracer(this.instrumentationName, this.instrumentationVersion);
