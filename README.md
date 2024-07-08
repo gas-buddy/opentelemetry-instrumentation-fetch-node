@@ -2,7 +2,7 @@
 
 [![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.png?v=101)](https://github.com/ellerbrock/typescript-badges/)
 
-![main CI](https://github.com/gas-buddy/opentelemetry-instrumentation-fetch-node/actions/workflows/npm_publish.yml/badge.svg)
+![main CI](https://github.com/gas-buddy/opentelemetry-instrumentation-fetch-node/actions/workflows/nodejs.yml/badge.svg)
 
 [![npm version](https://badge.fury.io/js/@gasbuddy%2Fopentelemetry-instrumentation-fetch-node.svg)](https://badge.fury.io/js/opentelemetry-instrumentation-fetch-node)
 
