@@ -78,7 +78,8 @@ function contentLengthFromResponseHeaders(headers: Buffer[]) {
 
 async function loadFetch() {
   try {
-    await fetch('');
+    const request = new Request('');
+    await fetch(request);
   } catch (_) {
     //
   }
